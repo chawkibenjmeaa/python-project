@@ -1,0 +1,7 @@
+ticker,recommendation,headlines,avg_sentiment,numbers_verified,numbers_unverified,unverified,seconds
+AAPL,HOLD,40,0.12,8,0,,17
+MSFT,HOLD,40,0.15,10,0,,14
+TSLA,HOLD,40,0.07,6,0,,13
+F,SELL,40,0.03,7,0,,19
+INTC,SELL,40,-0.23,9,0,,14
+NVDA,HOLD,40,0.1,8,0,,44

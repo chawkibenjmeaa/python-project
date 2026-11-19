@@ -1,0 +1,8 @@
+langgraph
+openai
+streamlit
+yfinance
+edgartools
+pandas
+requests
+python-dotenv
