@@ -20,7 +20,7 @@ st.set_page_config(page_title="AI Investment Memo", layout="wide")
 st.title("AI Investment Memo")
 st.caption("A first-pass note written by a team of AI agents. Not financial advice.")
 
-ticker = st.text_input("Ticker (US-listed company)", "AAPL")
+ticker = st.text_input("Ticker (US-listed company)", "AAPL").strip().upper()
 
 if st.button("Write memo", type="primary") and ticker:
     state = {}
