@@ -28,7 +28,8 @@ def check_memo(memo, source_text):
         if not is_pct and decimals == 0 and abs(value) < 10:
             continue
 
-        if any(round(s, decimals) == value for s in source):
+        # Compare without the sign: a memo often writes "a loss of $9.17B" for a source value of -9.17
+        if any(abs(round(s, decimals)) == abs(value) for s in source):
             verified.append(token)
         else:
             unverified.append(token)
