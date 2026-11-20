@@ -1,6 +1,6 @@
 """Run the agents on several tickers and save a summary to evaluation.csv.
 
-Usage:  python evaluate.py AAPL MSFT TSLA F INTC
+Usage:  python evaluate.py AAPL MSFT TSLA F INTC NVDA JPM
 """
 import re
 import sys
@@ -10,9 +10,11 @@ import pandas as pd
 
 from agents import build_graph
 
-tickers = sys.argv[1:] or ["AAPL", "MSFT", "TSLA", "F", "INTC"]
+DEFAULT_TICKERS = ["AAPL", "MSFT", "TSLA", "F", "INTC", "NVDA", "JPM"]
+tickers = sys.argv[1:] or DEFAULT_TICKERS
 graph = build_graph()
 rows = []
+
 for ticker in tickers:
     start = time.time()
     try:
@@ -26,6 +28,7 @@ for ticker in tickers:
             "avg_sentiment": round(sum(n["score"] for n in news) / len(news), 2) if news else None,
             "numbers_verified": len(result["check"]["verified"]),
             "numbers_unverified": len(result["check"]["unverified"]),
+            "accuracy_pct": result["check"].get("accuracy_pct", 100.0),
             "unverified": " ".join(result["check"]["unverified"]),
             "seconds": round(time.time() - start),
         })
@@ -33,5 +36,8 @@ for ticker in tickers:
         rows.append({"ticker": ticker, "recommendation": f"ERROR: {error}"})
     print(rows[-1])
 
-pd.DataFrame(rows).to_csv("evaluation.csv", index=False)
-print("Saved evaluation.csv")
+df = pd.DataFrame(rows)
+df.to_csv("evaluation.csv", index=False)
+print("\nSaved evaluation.csv")
+if "accuracy_pct" in df.columns:
+    print(f"Average numerical accuracy: {df['accuracy_pct'].mean():.1f}% | Average time: {df['seconds'].mean():.1f}s")
