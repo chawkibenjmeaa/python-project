@@ -179,11 +179,12 @@ def score_headlines(ticker, headlines):
 
 @cached
 def get_news(ticker):
-    """Last 4 weeks of company news from Finnhub (10 headlines per week), with sentiment scores."""
+    """Last 4 weeks of unique company news from Finnhub (up to 10 per week), with sentiment scores."""
     key = os.getenv("FINNHUB_API_KEY")
     if not key:
         return []
     news = []
+    seen_headlines = set()
     for week in range(4):  # one request per week, because Finnhub limits each answer
         end = date.today() - timedelta(days=7 * week)
         r = requests.get(
@@ -195,10 +196,14 @@ def get_news(ticker):
         items = r.json()
         step = max(1, len(items) // 10)
         for item in items[::step][:10]:
+            headline = item.get("headline", "").strip()
+            if not headline or headline.lower() in seen_headlines:
+                continue
+            seen_headlines.add(headline.lower())
             news.append({
                 "date": date.fromtimestamp(item["datetime"]).isoformat(),
-                "headline": item["headline"],
-                "source": item["source"],
+                "headline": headline,
+                "source": item.get("source", "Unknown"),
             })
     scores = score_headlines(ticker, [n["headline"] for n in news]) if news else []
     for n, score in zip(news, scores):
