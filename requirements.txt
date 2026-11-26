@@ -6,3 +6,4 @@ edgartools
 pandas
 requests
 python-dotenv
+plotly
