@@ -243,14 +243,11 @@ st.session_state.setdefault("ticker", "AAPL")
 with st.sidebar:
     st.markdown("### Choose a company")
     st.text_input("Ticker (US-listed company)", key="ticker")
-    demo = st.checkbox("Demo mode (fake data, no API keys)")
     clicked = st.button("Write memo", type="primary")
     st.caption("Or try one of these:")
     columns = st.columns(3)
     for i, name in enumerate(EXAMPLES):
         columns[i % 3].button(name, key=f"ex_{name}", on_click=queue_ticker, args=(name,))
-    st.divider()
-    st.caption("Educational analysis written by AI agents. Not investment advice.")
 
 st.markdown(
     '<div class="hero"><h1>AI Investment Memo</h1>'
@@ -262,7 +259,7 @@ st.markdown(
 queued = st.session_state.pop("run", False)
 ticker = st.session_state.ticker.strip().upper()
 if (clicked or queued) and ticker:
-    st.session_state.result = run_analysis(ticker, demo)
+    st.session_state.result = run_analysis(ticker)
 
 if "result" in st.session_state:
     render_result(st.session_state.result)
